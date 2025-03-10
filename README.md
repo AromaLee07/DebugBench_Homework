@@ -32,8 +32,8 @@
 4. 随机挑选前13条失败的用例，结合上述手工运行的结果，误判为15.4%，语法错误为38.5%，逻辑错误为46.2%
 5. 可以得出大模型的准确率大概为 (1-15.4%)=84.6%
 6. 测试中发现误判的原因有的也很复杂，比如第56个case：construct-binary-tree-from-inorder-and-postorder-traversal：
-      real_output: Constructed Binary Tree: **3**, left: (**9**, left: (None), right: (**None**)), right: (**20**, left: (**15**, left: (None), right: (None)), right: (**7**, left: (None), right: (None)))
-      expected_output: [3,9,20,null,null,15,7]
+      实际输出: Constructed Binary Tree: **3**, left: (**9**, left: (None), right: (**None**)), right: (**20**, left: (**15**, left: (None), right: (None)), right: (**7**, left: (None), right: (None))) \n
+      预期输出: [3,9,20,null,null,15,7]
    其实是一致的，只是取决于何样的输出样式，这是人工决定的，所以算作误判
 7. 综上所述，大模型的准确率是高于84.6%的，预计可能实际在92%左右
 
