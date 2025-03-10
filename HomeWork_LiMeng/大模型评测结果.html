@@ -1,0 +1,1086 @@
+<html><head><title>测试报告</title></head><body><h1>测试报告</h1><p style='color: green;'>✅ 1. Task ID: maximum-depth-of-binary-tree - Status: PASS</p>
+<hr><p style='color: green;'>✅ 2. Task ID: number-complement - Status: PASS</p>
+<hr><p style='color: green;'>✅ 3. Task ID: count-anagrams - Status: PASS</p>
+<hr><p style='color: green;'>✅ 4. Task ID: lexicographical-numbers - Status: PASS</p>
+<hr><p style='color: green;'>✅ 5. Task ID: create-components-with-same-value - Status: PASS</p>
+<hr><p style='color: green;'>✅ 6. Task ID: arithmetic-slices-ii-subsequence - Status: PASS</p>
+<hr><p style='color: green;'>✅ 7. Task ID: find-closest-node-to-given-two-nodes - Status: PASS</p>
+<hr><p style='color: green;'>✅ 8. Task ID: rearrange-words-in-a-sentence - Status: PASS</p>
+<hr><p style='color: red;'>❌ 9. Task ID: count-number-of-maximum-bitwise-or-subsets - Status: FAIL</p>
+<pre>Fixed Code: from typing import List
+import collections
+import itertools
+import functools
+
+
+def countMaxOrSubsets(nums: List[int]) -> int:
+    mapping = collections.defaultdict(int)
+    for count in range(1, len(nums) + 1):
+        subsets = list(itertools.combinations(nums, count))
+        for ele in subsets:
+            mapping[functools.reduce(lambda a, b: a | b, list(ele), 0)] += 1
+    return mapping[max(mapping.keys())]</pre>
+<hr><p style='color: green;'>✅ 10. Task ID: generate-random-point-in-a-circle - Status: PASS</p>
+<hr><p style='color: green;'>✅ 11. Task ID: check-if-string-is-transformable-with-substring-sort-operations - Status: PASS</p>
+<hr><p style='color: green;'>✅ 12. Task ID: kth-largest-element-in-an-array - Status: PASS</p>
+<hr><p style='color: green;'>✅ 13. Task ID: powerful-integers - Status: PASS</p>
+<hr><p style='color: green;'>✅ 14. Task ID: string-compression-ii - Status: PASS</p>
+<hr><p style='color: green;'>✅ 15. Task ID: largest-positive-integer-that-exists-with-its-negative - Status: PASS</p>
+<hr><p style='color: green;'>✅ 16. Task ID: maximize-number-of-nice-divisors - Status: PASS</p>
+<hr><p style='color: green;'>✅ 17. Task ID: two-furthest-houses-with-different-colors - Status: PASS</p>
+<hr><p style='color: green;'>✅ 18. Task ID: length-of-the-longest-valid-substring - Status: PASS</p>
+<hr><p style='color: red;'>❌ 19. Task ID: number-of-ways-of-cutting-a-pizza - Status: FAIL</p>
+<pre>Fixed Code: 以下是修复后的代码：
+
+```python
+from functools import cache
+from typing import List
+
+class Solution:
+    def ways(self, pizza: List[str], k: int) -> int:
+        self.r = len(pizza)
+        self.c = len(pizza[0])
+        
+        tot_apples = 0
+        self.pfsum_row = []
+        self.pfsum_col = []
+        
+        for i in range(self.r):
+            pfr = 0
+            pfs_r = [0] * self.c
+            pfs_c = [0] * self.c
+            for j in range(self.c):
+                if i > 0:
+                    pfs_c[j] += self.pfsum_col[i - 1][j]
+                if pizza[i][j] == 'A':
+                    pfr += 1
+                    pfs_c[j] += 1
+                    tot_apples += 1
+                pfs_r[j] = pfr
+            self.pfsum_row.append(pfs_r)
+            self.pfsum_col.append(pfs_c)
+        
+        if tot_apples < k:
+            return 0
+        
+        if k == 1:
+            return 1
+        
+        return self.getWays(0, 0, k - 1) % (1000000007)
+    
+    
+    @cache
+    def getWays(self, i, j, k):
+        if k == 0:
+            for x in range(i, self.r):
+                for y in range(j, self.c):
+                    if self.pfsum_row[x][y] - (self.pfsum_row[x][j - 1] if j > 0 else 0) - (self.pfsum_row[i - 1][y] if i > 0 else 0) + (self.pfsum_row[i - 1][j - 1] if i > 0 and j > 0 else 0) > 0:
+                        return 1
+            return 0
+        else:
+            ways = 0
+            # 尝试水平切割
+            for new_i in range(i + 1, self.r):
+                apple_count = self.pfsum_row[new_i - 1][self.c - 1] - (self.pfsum_row[new_i -</pre>
+<hr><p style='color: green;'>✅ 20. Task ID: valid-arrangement-of-pairs - Status: PASS</p>
+<hr><p style='color: red;'>❌ 21. Task ID: sliding-window-median - Status: FAIL</p>
+<pre>Fixed Code: 你提供的代码有几个问题需要修复：
+
+1. `List` 没有被导入，需要添加 `from typing import List`。
+2. `random` 没有被导入，需要添加 `import random`。
+3. 在计算偶数情况下的中位数时，将结果添加到了 `nums` 而不是 `ans`。
+4. `release` 函数没有定义。
+
+以下是修复后的代码：
+
+```python
+from typing import List
+import random
+
+class Solution:
+    def medianSlidingWindow(self, nums: List[int], k: int) -> List[float]:
+        tree = None
+        ans = []
+        for i, x in enumerate(nums):
+            tree = insert(tree, x)
+            if size(tree) > k:
+                tree = remove(tree, nums[i - k + 1])
+            if size(tree) == k:
+                if k % 2 == 1:
+                    ans.append(get(tree, k // 2 + 1))
+                else:
+                    ans.append((get(tree, k // 2) + get(tree, k // 2 + 1)) / 2)
+        return ans
+
+class Node:
+    __slots__ = ['val', 'count', 'weight', 'size', 'left', 'right']
+    def __init__(self, val):
+        self.val = val
+        self.count = 1
+        self.weight = random.random()
+        self.size = 1
+        self.left = self.right = None
+
+def touch(root):
+    if not root:
+        return
+    root.size = root.count + size(root.left) + size(root.right)
+
+def size(root):
+    if not root:
+        return 0
+    return root.size
+
+def insert(root, val):
+    t1, r, t2 = split(root, val)
+    if not r:
+        r = Node(val)
+    else:
+        r.count += 1
+        touch(r)
+    t2 = join(r, t2)
+    return join(t1, t2)
+
+def remove(root, val):
+    t1, r, t2 = split(root, val)
+    if r and r.count > 1:
+        r.count -= 1
+        touch(r)
+        t2 = join(r, t2)</pre>
+<hr><p style='color: green;'>✅ 22. Task ID: course-schedule - Status: PASS</p>
+<hr><p style='color: green;'>✅ 23. Task ID: minimum-obstacle-removal-to-reach-corner - Status: PASS</p>
+<hr><p style='color: green;'>✅ 24. Task ID: n-queens-ii - Status: PASS</p>
+<hr><p style='color: green;'>✅ 25. Task ID: kth-largest-element-in-an-array - Status: PASS</p>
+<hr><p style='color: green;'>✅ 26. Task ID: baseball-game - Status: PASS</p>
+<hr><p style='color: green;'>✅ 27. Task ID: partition-array-according-to-given-pivot - Status: PASS</p>
+<hr><p style='color: green;'>✅ 28. Task ID: nim-game - Status: PASS</p>
+<hr><p style='color: green;'>✅ 29. Task ID: all-ancestors-of-a-node-in-a-directed-acyclic-graph - Status: PASS</p>
+<hr><p style='color: green;'>✅ 30. Task ID: find-players-with-zero-or-one-losses - Status: PASS</p>
+<hr><p style='color: green;'>✅ 31. Task ID: reverse-nodes-in-k-group - Status: PASS</p>
+<hr><p style='color: red;'>❌ 32. Task ID: length-of-the-longest-valid-substring - Status: FAIL</p>
+<pre>Fixed Code: from typing import List
+
+class Solution:
+    def longestValidSubstring(self, word: str, forbidden: List[str]) -> int:
+        trie = {}
+        for f in forbidden:
+            t = trie
+            for c in f:
+                if c not in t:
+                    t[c] = {}
+                t = t[c]
+            t["end"] = True
+        
+        def isForbidden(s):
+            t = trie
+            counter = 0
+            for c in s:
+                if c not in t:
+                    return False
+                t = t[c]
+                counter += 1
+                if "end" in t:
+                    return counter
+            return False
+        
+        res = 0
+        j = len(word)
+        for i in range(len(word)):
+            truc = isForbidden(word[i:j])
+            if truc:
+                j = i + truc
+            res = max(res, j - i)
+        return res</pre>
+<hr><p style='color: red;'>❌ 33. Task ID: minimize-the-total-price-of-the-trips - Status: FAIL</p>
+<pre>Fixed Code: 你提供的代码存在以下几个问题需要修复：
+
+1. 在定义 `dfs` 和 `dp` 函数时，缺少冒号 `:`。
+2. 在 `dp` 函数中，`res0 += max(curr)` 这里 `curr` 是一个列表，应该是 `res0 += max(curr[0], curr[1])`。
+
+以下是修复后的代码：
+
+```python
+from typing import List
+
+class Solution:
+    def minimumTotalPrice(self, n: int, edges: List[List[int]], price: List[int], trips: List[List[int]]) -> int:
+        g = [[] for _ in range(n)]
+        for i, j in edges:
+            g[i].append(j)
+            g[j].append(i)
+            
+        freq = [0] * n
+        level = [0] * n
+        parent = [0] * n
+        
+        def dfs(i, l, p):  # 这里添加冒号
+            level[i] = l
+            parent[i] = p
+            for j in g[i]:
+                if j != p:
+                    dfs(j, l + 1, i)
+        
+        def LCA(a, b):
+            if level[a] > level[b]:
+                a, b = b, a
+            d = level[b] - level[a]
+            while d:
+                b = parent[b]
+                d -= 1
+            if a == b:
+                return a
+            while a != b:
+                a = parent[a]
+                b = parent[b]
+            return a
+        
+        dfs(0, 0, -1)
+        for i, j in trips:
+            lca = LCA(i, j)
+            path = []
+            while i != lca:
+                freq[i] += 2
+                i = parent[i]
+            freq[i] += 1
+            while j != lca:
+                freq[j] += 1
+                j = parent[j]
+        
+        def dp(i, p):  # 这里添加冒号
+            res0 = 0
+            res1 = price[i] // 2 * freq[i]
+            for j in g[i]:
+                if j != p:
+                    curr = dp(j, i)
+                    res0 += max(curr[</pre>
+<hr><p style='color: green;'>✅ 34. Task ID: lexicographically-smallest-string-after-substring-operation - Status: PASS</p>
+<hr><p style='color: green;'>✅ 35. Task ID: plus-one - Status: PASS</p>
+<hr><p style='color: green;'>✅ 36. Task ID: valid-arrangement-of-pairs - Status: PASS</p>
+<hr><p style='color: green;'>✅ 37. Task ID: median-of-two-sorted-arrays - Status: PASS</p>
+<hr><p style='color: green;'>✅ 38. Task ID: third-maximum-number - Status: PASS</p>
+<hr><p style='color: green;'>✅ 39. Task ID: largest-positive-integer-that-exists-with-its-negative - Status: PASS</p>
+<hr><p style='color: green;'>✅ 40. Task ID: longest-harmonious-subsequence - Status: PASS</p>
+<hr><p style='color: green;'>✅ 41. Task ID: binary-tree-level-order-traversal-ii - Status: PASS</p>
+<hr><p style='color: red;'>❌ 42. Task ID: adding-two-negabinary-numbers - Status: FAIL</p>
+<pre>Fixed Code: class Solution:
+    def addBinary(self, A, B):
+        res = []
+        carry = 0
+        while A or B or carry:
+            carry += (A or [0]).pop(0) + (B or [0]).pop(0)
+            res.append(carry & 1)
+            carry = carry >> 1
+        return res
+
+    def addNegabinary(self, A, B):
+        res = []
+        carry = 0
+        while A or B or carry:
+            carry += (A or [0]).pop(0) + (B or [0]).pop(0)
+            res.append(carry & 1)
+            carry = (carry - res[-1]) // -2
+        while len(res) > 1 and res[-1] == 0:
+            res.pop()
+        return res[::-1]</pre>
+<hr><p style='color: green;'>✅ 43. Task ID: find-players-with-zero-or-one-losses - Status: PASS</p>
+<hr><p style='color: red;'>❌ 44. Task ID: course-schedule - Status: FAIL</p>
+<pre>Fixed Code: from typing import List
+from collections import defaultdict
+
+
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        pre = defaultdict(list)
+        for course, p in prerequisites:
+            pre[course].append(p)
+        taken = set()
+
+        def dfs(course):
+            if not pre[course]:
+                return True
+            if course in taken:
+                return False
+            taken.add(course)
+            for p in pre[course]:
+                if not dfs(p):
+                    return False
+            taken.remove(course)
+            return True
+
+        for course in range(numCourses):
+            if not dfs(course):
+                return False
+        return True</pre>
+<hr><p style='color: green;'>✅ 45. Task ID: linked-list-cycle - Status: PASS</p>
+<hr><p style='color: green;'>✅ 46. Task ID: sort-colors - Status: PASS</p>
+<hr><p style='color: green;'>✅ 47. Task ID: kth-largest-element-in-an-array - Status: PASS</p>
+<hr><p style='color: green;'>✅ 48. Task ID: partition-array-into-three-parts-with-equal-sum - Status: PASS</p>
+<hr><p style='color: green;'>✅ 49. Task ID: n-queens-ii - Status: PASS</p>
+<hr><p style='color: green;'>✅ 50. Task ID: x-of-a-kind-in-a-deck-of-cards - Status: PASS</p>
+<hr><p style='color: green;'>✅ 51. Task ID: construct-quad-tree - Status: PASS</p>
+<hr><p style='color: green;'>✅ 52. Task ID: find-players-with-zero-or-one-losses - Status: PASS</p>
+<hr><p style='color: green;'>✅ 53. Task ID: watering-plants-ii - Status: PASS</p>
+<hr><p style='color: green;'>✅ 54. Task ID: baseball-game - Status: PASS</p>
+<hr><p style='color: red;'>❌ 55. Task ID: sum-of-absolute-differences-in-a-sorted-array - Status: FAIL</p>
+<pre>Fixed Code: from typing import List
+
+
+class Solution:
+    def getSumAbsoluteDifferences(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        total = sum(nums)
+        s1 = 0
+        s2 = total
+        arr = []
+        for i in range(n):
+            arr.append(self.calculateAbsoluteDifference(s1, nums[i], i, s2, n))
+            s1 = s1 + nums[i]
+            s2 = total - s1  # 修正此处的计算
+        return arr
+
+    def calculateAbsoluteDifference(self, s1, num, i, s2, n):
+        return s1 + s2 - num * (2 * i + 1) + num * (n - 1)</pre>
+<hr><p style='color: red;'>❌ 56. Task ID: construct-binary-tree-from-inorder-and-postorder-traversal - Status: FAIL</p>
+<pre>Fixed Code: from typing import List, Optional
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        inorder_map = {val: idx for idx, val in enumerate(inorder)}
+        postorder_idx = len(postorder) - 1
+
+        def treeHelper(left, right):
+            nonlocal postorder_idx
+            if left > right:
+                return None
+
+            node_val = postorder[postorder_idx]
+            root = TreeNode(node_val)  # 这里缺少括号，应改为TreeNode(node_val)
+            postorder_idx -= 1
+
+            inorder_index = inorder_map[node_val]
+
+            root.right = treeHelper(inorder_index + 1, right)  # 这里左右子树构建顺序有误，应先构建右子树
+            root.left = treeHelper(left, inorder_index - 1)
+
+            return root
+
+        return treeHelper(0, len(inorder) - 1)</pre>
+<hr><p style='color: green;'>✅ 57. Task ID: satisfiability-of-equality-equations - Status: PASS</p>
+<hr><p style='color: green;'>✅ 58. Task ID: minimum-time-to-complete-trips - Status: PASS</p>
+<hr><p style='color: green;'>✅ 59. Task ID: scramble-string - Status: PASS</p>
+<hr><p style='color: green;'>✅ 60. Task ID: find-all-possible-recipes-from-given-supplies - Status: PASS</p>
+<hr><p style='color: red;'>❌ 61. Task ID: sliding-window-median - Status: FAIL</p>
+<pre>Fixed Code: 以下是修复后的代码：
+
+```python
+import random
+
+
+class Node:
+    __slots__ = ['val', 'count', 'weight','size', 'left', 'right']
+
+    def __init__(self, val):
+        self.val = val
+        self.count = 1
+        self.weight = random.random()
+        self.size = 1
+        self.left = self.right = None
+
+
+def touch(root):
+    if not root:
+        return
+    root.size = root.count + size(root.left) + size(root.right)
+
+
+def size(root):
+    if not root:
+        return 0
+    return root.size
+
+
+def insert(root, val):
+    if not root:
+        return Node(val)
+    if root.val == val:
+        root.count += 1
+    elif root.val < val:
+        root.right = insert(root.right, val)
+    else:
+        root.left = insert(root.left, val)
+    touch(root)
+    return root
+
+
+def remove(root, val):
+    if not root:
+        return None
+    if root.val == val:
+        if root.count > 1:
+            root.count -= 1
+        else:
+            if not root.left:
+                return root.right
+            elif not root.right:
+                return root.left
+            if root.left.weight < root.right.weight:
+                root.val, root.left = root.left.val, remove(root.left, root.val)
+            else:
+                root.val, root.right = root.right.val, remove(root.right, root.val)
+    elif root.val < val:
+        root.right = remove(root.right, val)
+    else:
+        root.left = remove(root.left, val)
+    touch(root)
+    return root
+
+
+def get(root, rank):
+    left_size = size(root.left)
+    if rank <= left_size:
+        return get(root.left, rank)
+    elif rank <= left_size + root.count:
+        return root.val
+    else:
+        return get(root.right, rank - left_size - root.count)
+
+
+def release(root, rank):
+    left_size = size(root.left)
+    if rank <= left_size:
+        return release(root.left, rank)
+    elif rank <= left_size + root.count:
+        return root.val
+    else:
+        return release(root.right, rank - left</pre>
+<hr><p style='color: green;'>✅ 62. Task ID: binary-tree-level-order-traversal-ii - Status: PASS</p>
+<hr><p style='color: green;'>✅ 63. Task ID: all-ancestors-of-a-node-in-a-directed-acyclic-graph - Status: PASS</p>
+<hr><p style='color: green;'>✅ 64. Task ID: restore-ip-addresses - Status: PASS</p>
+<hr><p style='color: green;'>✅ 65. Task ID: longest-cycle-in-a-graph - Status: PASS</p>
+<hr><p style='color: red;'>❌ 66. Task ID: count-the-repetitions - Status: FAIL</p>
+<pre>Fixed Code: from collections import defaultdict
+
+class Solution:
+    def getMaxRepetitions(self, s1: str, n1: int, s2: str, n2: int) -> int:
+        rec, track = [0], defaultdict(int) 
+        ct = start = ptr1 = ptr2 = 0
+
+        if not set(s2).issubset(set(s1)): return 0
+
+        s1 = ''.join(char for char in s1 if char in set(s2))
+        
+        while True:
+            for char in s2:
+                ptr = s1.find(char, start)
+                if ptr == -1:
+                    ct += 1
+                    ptr = s1.find(char)
+                start = ptr + 1
+            rec.append(ct + 1)
+
+            if rec[-1] >= n1: return (len(rec) - 2) // n2
+
+            if start not in track:  # 这里应该是start，原代码使用ptr错误
+                track[start] = len(rec) - 1
+            else:
+                break
+        
+        cycleStart = rec[track[start]]
+        cycle1, cycle2 = rec[-1] - cycleStart, len(rec) - 1 - track[start]
+        rest = n1 - cycleStart
+        
+        rem = cycleStart + (rest % cycle1)  # 这里计算剩余部分的逻辑修改
+
+        ptr2 = 0
+        while rec[ptr2] <= rem:
+            ptr2 += 1
+
+        return (cycle2 * (rest // cycle1) + (ptr2 - 1)) // n2
+
+    def calculateRemainder(self, a, b):  # 原代码中使用了未定义的方法，这里添加简单计算余数的方法
+        return a % b</pre>
+<hr><p style='color: green;'>✅ 67. Task ID: minimum-obstacle-removal-to-reach-corner - Status: PASS</p>
+<hr><p style='color: red;'>❌ 68. Task ID: count-the-repetitions - Status: FAIL</p>
+<pre>Fixed Code: from collections import defaultdict
+
+
+class Solution:
+    def getMaxRepetitions(self, s1: str, n1: int, s2: str, n2: int) -> int:
+        rec, track = [0], defaultdict(int)
+        ct = start = ptr1 = ptr2 = 0
+
+        if not set(s2).issubset(set(s1)):
+            return 0
+
+        s1 = ''.join(char for char in s1 if char in set(s2))
+
+        while True:
+            for char in s2:
+                ptr = s1.find(char, start)
+                if ptr == -1:
+                    ct += 1
+                    ptr = s1.find(char)
+                start = ptr + 1
+            rec.append(ct + 1)
+
+            if rec[-1] >= n1:
+                return (len(rec) - 2) // n2
+
+            if start not in track:  # 这里应该是start，而不是ptr
+                track[start] = len(rec) - 1
+            else:
+                break
+
+        cycleStart = rec[track[start]]
+        cycle1, cycle2 = rec[-1] - cycleStart, len(rec) - 1 - track[start]
+        rest = n1 - cycleStart
+
+        rem = cycleStart + rest % cycle1
+
+        while rec[ptr2] <= rem:
+            ptr2 += 1
+
+        return (cycle2 * (rest // cycle1) + ptr2 - 1) // n2</pre>
+<hr><p style='color: red;'>❌ 69. Task ID: count-the-repetitions - Status: FAIL</p>
+<pre>Fixed Code: from collections import defaultdict
+
+
+class Solution:
+    def getMaxRepetitions(self, s1: str, n1: int, s2: str, n2: int) -> int:
+        rec, track = [0], defaultdict(int)
+        ct = start = ptr1 = ptr2 = 0
+
+        if not set(s2).issubset(set(s1)):
+            return 0
+
+        s1 = ''.join(char for char in s1 if char in set(s2))
+
+        while True:
+            for char in s2:
+                ptr = s1.find(char, start)
+                if ptr == -1:
+                    ct += 1
+                    ptr = s1.find(char)
+                start = ptr + 1
+            rec.append(ct + 1)
+
+            if rec[-1] > n1:
+                return (len(rec) - 2) // n2
+
+            if start not in track:
+                track[start] = len(rec) - 1
+            else:
+                break
+
+        cycleStart = rec[track[start]]
+        cycle1, cycle2 = rec[-1] - cycleStart, len(rec) - 1 - track[start]
+        rest = n1 - cycleStart
+
+        rem = cycleStart + rest % cycle1
+
+        while rec[ptr2] <= rem:
+            ptr2 += 1
+
+        return (cycle2 * (rest // cycle1) + ptr2 - 2) // n2</pre>
+<hr><p style='color: green;'>✅ 70. Task ID: sum-of-absolute-differences-in-a-sorted-array - Status: PASS</p>
+<hr><p style='color: green;'>✅ 71. Task ID: pascals-triangle - Status: PASS</p>
+<hr><p style='color: red;'>❌ 72. Task ID: number-of-ways-of-cutting-a-pizza - Status: FAIL</p>
+<pre>Fixed Code: 以下是修复后的代码：
+
+```python
+from functools import cache
+from typing import List
+
+
+class Solution:
+    def ways(self, pizza: List[str], k: int) -> int:
+        self.r = len(pizza)
+        self.c = len(pizza[0])
+        tot_apples = 0
+        self.pfsum_row = []
+        self.pfsum_col = []
+        for i in range(self.r):
+            pfr = 0
+            pfs_r = [0] * self.c
+            pfs_c = [0] * self.c
+            for j in range(self.c):
+                if i > 0:
+                    pfs_c[j] += self.pfsum_col[i - 1][j] if self.pfsum_col else 0
+                if pizza[i][j] == 'A':
+                    pfr += 1
+                    pfs_c[j] += 1
+                    tot_apples += 1
+                pfs_r[j] = pfr
+            self.pfsum_row.append(pfs_r)
+            self.pfsum_col.append(pfs_c)
+
+        if tot_apples < k:
+            return 0
+
+        if k == 1:
+            return 1
+        return self.getWays(0, 0, k) % (1000000007)
+
+    @cache
+    def getWays(self, i, j, k):
+        if k == 1:
+            found = False
+            for c in range(j, self.c):
+                apple_in_region = self.pfsum_col[self.r - 1][c]
+                if i > 0:
+                    apple_in_region -= self.pfsum_col[i - 1][c]
+                if apple_in_region:
+                    found = True
+                    break
+            if found:
+                return 1
+            return 0
+        else:
+            cannot_cut = True
+            nr = i
+            t_cnt = 0
+            while nr < self.r - 1:
+                while nr < self.r - 1 and cannot_cut:
+                    apple_in_region = self.pfsum_row[nr][self.c - 1]
+                    if j > 0:
+                        apple_in_region -= self.pfsum_row[nr][j - 1</pre>
+<hr><p style='color: green;'>✅ 73. Task ID: linked-list-in-binary-tree - Status: PASS</p>
+<hr><p style='color: green;'>✅ 74. Task ID: length-of-the-longest-valid-substring - Status: PASS</p>
+<hr><p style='color: green;'>✅ 75. Task ID: baseball-game - Status: PASS</p>
+<hr><p style='color: green;'>✅ 76. Task ID: powerful-integers - Status: PASS</p>
+<hr><p style='color: green;'>✅ 77. Task ID: median-of-two-sorted-arrays - Status: PASS</p>
+<hr><p style='color: green;'>✅ 78. Task ID: binary-tree-level-order-traversal-ii - Status: PASS</p>
+<hr><p style='color: green;'>✅ 79. Task ID: check-if-string-is-transformable-with-substring-sort-operations - Status: PASS</p>
+<hr><p style='color: green;'>✅ 80. Task ID: check-if-every-row-and-column-contains-all-numbers - Status: PASS</p>
+<hr><p style='color: green;'>✅ 81. Task ID: kth-largest-sum-in-a-binary-tree - Status: PASS</p>
+<hr><p style='color: green;'>✅ 82. Task ID: kth-largest-element-in-an-array - Status: PASS</p>
+<hr><p style='color: green;'>✅ 83. Task ID: design-a-text-editor - Status: PASS</p>
+<hr><p style='color: red;'>❌ 84. Task ID: count-the-repetitions - Status: FAIL</p>
+<pre>Fixed Code: from collections import defaultdict
+
+
+class Solution:
+    def getMaxRepetitions(self, s1: str, n1: int, s2: str, n2: int) -> int:
+        rec, track = [0], defaultdict(int)
+        ct = start = ptr1 = ptr2 = 0
+
+        if not set(s2).issubset(set(s1)):
+            return 0
+
+        s1 = ''.join(char for char in s1 if char in set(s2))
+
+        while True:
+            for char in s2:
+                ptr = s1.find(char, start)
+                if ptr == -1:
+                    ct += 1
+                    ptr = s1.find(char)
+                start = ptr + 1
+            rec.append(ct + 1)
+
+            if rec[-1] > n1:
+                return (len(rec) - 2) // n2
+
+            if start not in track:  # 这里应该是start而不是ptr，因为我们记录的是下一次查找的起始位置
+                track[start] = len(rec) - 1
+            else:
+                break
+
+        cycleStart = rec[track[start]]
+        cycle1, cycle2 = rec[-1] - cycleStart, len(rec) - 1 - track[start]
+        rest = n1 - cycleStart
+
+        rem = cycleStart + self.calculateRemainder(rest, cycle1)
+
+        while rec[ptr2] <= rem:
+            ptr2 += 1
+
+        return (cycle2 * (rest // cycle1) + ptr2 - 2) // n2
+
+    def calculateRemainder(self, a, b):
+        return a % b</pre>
+<hr><p style='color: green;'>✅ 85. Task ID: number-of-pairs-of-strings-with-concatenation-equal-to-target - Status: PASS</p>
+<hr><p style='color: red;'>❌ 86. Task ID: valid-permutations-for-di-sequence - Status: FAIL</p>
+<pre>Fixed Code: from collections import defaultdict
+
+class Solution:
+    def numPermsDISequence(self, s: str) -> int:
+        mem = defaultdict(int)
+        n = len(s)
+
+        def dfs(i, val=0):
+            if i == len(s):
+                return 1
+            if (i, val) in mem:
+                return mem[(i, val)]
+            p = 0
+            if s[i] == "D":
+                for ind in range(0, val):
+                    p += dfs(i + 1, ind)
+                    p %= (10 ** 9 + 7)
+            else:
+                for ind in range(val, n + 1):
+                    p += dfs(i + 1, ind)
+                    p %= (10 ** 9 + 7)
+            mem[(i, val)] = p
+            return p
+
+        return dfs(0)</pre>
+<hr><p style='color: green;'>✅ 87. Task ID: minimum-difference-between-highest-and-lowest-of-k-scores - Status: PASS</p>
+<hr><p style='color: red;'>❌ 88. Task ID: maximum-elegance-of-a-k-length-subsequence - Status: FAIL</p>
+<pre>Fixed Code: from collections import defaultdict
+from typing import List
+
+class Solution:
+    def findMaximumElegance(self, items: List[List[int]], k: int) -> int:
+        dico = defaultdict(list)
+        for profit, category in items:
+            dico[category].append(profit)
+        
+        categories = []
+        for category in dico:
+            categories.append(sorted(dico[category], reverse=True))
+        
+        categories.sort(key=lambda x: x[0], reverse=True)
+        
+        def elegance(distinct):
+            res = 0
+            rest = []
+            for i in range(distinct):
+                res += categories[i][0]
+                rest.extend(categories[i][1:])
+            rest.sort(reverse=True)
+            if len(rest) < k - distinct:
+                return -1
+            return res + sum(rest[:k - distinct]) + distinct ** 2
+        
+        l, r = 1, min(len(categories), k)
+        while l < r:
+            mid = (l + r + 1) // 2
+            if elegance(mid) > elegance(mid - 1):
+                l = mid
+            else:
+                r = mid - 1
+        
+        return max(elegance(l), elegance(l - 1))</pre>
+<hr><p style='color: red;'>❌ 89. Task ID: restore-ip-addresses - Status: FAIL</p>
+<pre>Fixed Code: from typing import List
+
+class Solution:
+    def restoreIpAddresses(self, s: str) -> List[str]:
+        res = []
+        cur = []
+        def backtrack(i):
+            if i == len(s) and len(cur) == 4:
+                res.append(".".join(cur))
+                return
+            if len(cur) > 4 or i > len(s):
+                return
+            if s[i] == '0':
+                cur.append(s[i])
+                backtrack(i + 1)
+                cur.pop()
+                return
+            j = 0
+            while j < 3 and i + j < len(s):
+                if 0 <= int(s[i:i + j + 1]) < 256:
+                    cur.append(s[i:i + j + 1])
+                    backtrack(i + j + 1)
+                    cur.pop()
+                j += 1
+        backtrack(0)
+        return res</pre>
+<hr><p style='color: green;'>✅ 90. Task ID: max-points-on-a-line - Status: PASS</p>
+<hr><p style='color: green;'>✅ 91. Task ID: fizz-buzz - Status: PASS</p>
+<hr><p style='color: red;'>❌ 92. Task ID: lexicographically-smallest-string-after-substring-operation - Status: FAIL</p>
+<pre>Fixed Code: class Solution:
+    def smallestString(self, s: str) -> str:
+        if len(set(s)) == 1 and s[0] != 'a':
+            return 'z' * len(s)
+        contiguous, change, ct1, ct2 = True, False, 0, 0
+        for i in s:
+            if i == 'a':
+                ct1 += 1
+            else:
+                break
+        ans = 'a' * ct1
+        s = s[ct1:]
+        for index, cha in enumerate(s):
+            ct2 += 1
+            if cha != 'a':
+                ans += chr(ord(cha) - 1)
+                change = True
+            else:
+                if change:
+                    contiguous = False
+                ans += cha
+            if not contiguous:
+                break
+        return ans + s[ct2:] if change else ans + 'z'</pre>
+<hr><p style='color: green;'>✅ 93. Task ID: can-place-flowers - Status: PASS</p>
+<hr><p style='color: green;'>✅ 94. Task ID: two-furthest-houses-with-different-colors - Status: PASS</p>
+<hr><p style='color: red;'>❌ 95. Task ID: length-of-the-longest-valid-substring - Status: FAIL</p>
+<pre>Fixed Code: from typing import List
+
+
+class Solution:
+    def longestValidSubstring(self, word: str, forbidden: List[str]) -> int:
+        trie = {}
+        for f in forbidden:
+            t = trie
+            for c in f:
+                if c not in t:
+                    t[c] = {}
+                t = t[c]
+            t["end"] = True
+
+        def isForbidden(s):
+            t = trie
+            counter = 0
+            for c in s:
+                if c not in t:
+                    return False
+                t = t[c]
+                counter += 1
+                if "end" in t:
+                    return counter
+            return False
+
+        res = 0
+        j = len(word)
+        for i in range(len(word) - 1, -1, -1):
+            truc = isForbidden(word[i:j])
+            if truc:
+                j = i - truc
+            else:
+                res = max(res, j - i)
+        return res</pre>
+<hr><p style='color: green;'>✅ 96. Task ID: find-players-with-zero-or-one-losses - Status: PASS</p>
+<hr><p style='color: red;'>❌ 97. Task ID: number-of-ways-of-cutting-a-pizza - Status: FAIL</p>
+<pre>Fixed Code: 以下是修复后的代码：
+
+```python
+from functools import cache
+from typing import List
+
+
+class Solution:
+    def ways(self, pizza: List[str], k: int) -> int:
+        self.r = len(pizza)
+        self.c = len(pizza[0])
+
+        # Step 1, pre - process the apple array and get the prefix sum
+        self.pfsum_row = [[0] * self.c for _ in range(self.r)]
+        self.pfsum_col = [[0] * self.c for _ in range(self.r)]
+
+        for i in range(self.r):
+            pfr = 0
+            for j in range(self.c):
+                if pizza[i][j] == 'A':
+                    pfr += 1
+                self.pfsum_row[i][j] = pfr
+                if i > 0:
+                    self.pfsum_col[i][j] += self.pfsum_col[i - 1][j]
+                if pizza[i][j] == 'A':
+                    self.pfsum_col[i][j] += 1
+
+        if sum([sum(row) for row in self.pfsum_row]) < k:
+            return 0
+
+        if k == 1:
+            return 1
+
+        return self.getWays(0, 0, k) % (1000000007)
+
+    @cache
+    def getWays(self, i, j, k):
+        if k == 1:
+            # if only left one piece for cutting, we just need to check if there is any apple in the region
+            for x in range(i, self.r):
+                for y in range(j, self.c):
+                    if self.pfsum_row[x][y] - (self.pfsum_row[x][j - 1] if j > 0 else 0) > 0:
+                        return 1
+            return 0
+        else:
+            # horizontally cut
+            t_cnt = 0
+            for nr in range(i, self.r - 1):
+                apple_in_region = self.pfsum_row[nr][self.c - 1] - (self.pfsum_row[nr][j - 1] if j > 0 else 0)
+                if apple_in_region > 0:
+                    t</pre>
+<hr><p style='color: green;'>✅ 98. Task ID: string-compression-ii - Status: PASS</p>
+<hr><p style='color: green;'>✅ 99. Task ID: closest-dessert-cost - Status: PASS</p>
+<hr><p style='color: green;'>✅ 100. Task ID: count-number-of-maximum-bitwise-or-subsets - Status: PASS</p>
+<hr><p style='color: green;'>✅ 101. Task ID: largest-number-after-digit-swaps-by-parity - Status: PASS</p>
+<hr><p style='color: green;'>✅ 102. Task ID: maximize-number-of-nice-divisors - Status: PASS</p>
+<hr><p style='color: red;'>❌ 103. Task ID: find-kth-bit-in-nth-binary-string - Status: FAIL</p>
+<pre>Fixed Code: class Solution:
+    def findKthBit(self, n, k, r=True):
+        if k == 1:
+            return '0' if r else '1'
+        mid = 1 << (n - 1)
+        if k < mid:
+            return self.findKthBit(n - 1, k, r)
+        elif k == mid:
+            return '1'
+        else:
+            return self.findKthBit(n - 1, 2 * mid - k, not r)</pre>
+<hr><p style='color: red;'>❌ 104. Task ID: count-the-repetitions - Status: FAIL</p>
+<pre>Fixed Code: from collections import defaultdict
+
+class Solution:
+    def getMaxRepetitions(self, s1: str, n1: int, s2: str, n2: int) -> int:
+        rec, track = [0], defaultdict(int) 
+        ct = start = ptr1 = ptr2 = 0
+
+        if not set(s2).issubset(set(s1)): return 0
+
+        s1 = ''.join(char for char in s1 if char in set(s2))
+        
+        while True:
+            for char in s2:
+                ptr = s1.find(char, start)
+                if ptr == -1:
+                    ct += 1
+                    ptr = s1.find(char)
+                start = ptr + 1
+            rec.append(ct + 1)
+
+            if rec[-1] >= n1: return (len(rec) - 2) // n2
+
+            if start not in track:  # 这里应该是start而不是ptr，因为我们是根据位置start来判断循环
+                track[start] = len(rec) - 1
+            else:
+                break
+        
+        cycleStart = rec[track[start]]
+        cycle1, cycle2 = rec[-1] - cycleStart, len(rec) - 1 - track[start]
+        rest = n1 - cycleStart
+        
+        rem = cycleStart + rest % cycle1
+
+        while rec[ptr2] <= rem:
+            ptr2 += 1
+
+        return (cycle2 * (rest // cycle1) + ptr2 - 1) // n2  # 这里应该是ptr2 - 1，因为rec从0开始计数</pre>
+<hr><p style='color: green;'>✅ 105. Task ID: fizz-buzz - Status: PASS</p>
+<hr><p style='color: red;'>❌ 106. Task ID: grid-game - Status: FAIL</p>
+<pre>Fixed Code: from typing import List
+
+class Solution:
+    def gridGame(self, grid: List[List[int]]) -> int:
+        result = float("inf")
+        left, right = 0, sum(grid[0])
+
+        for a, b in zip(grid[1], grid[0]):
+            right -= a
+            result = min(result, max(left, right))
+            left += b
+
+        return result</pre>
+<hr><p style='color: green;'>✅ 107. Task ID: kth-largest-element-in-an-array - Status: PASS</p>
+<hr><p style='color: green;'>✅ 108. Task ID: valid-parenthesis-string - Status: PASS</p>
+<hr><p style='color: red;'>❌ 109. Task ID: valid-arrangement-of-pairs - Status: FAIL</p>
+<pre>Fixed Code: from collections import defaultdict
+from typing import List
+
+
+class Solution:
+    def validArrangement(self, pairs: List[List[int]]) -> List[List[int]]:
+        graph = defaultdict(list)
+        degree = defaultdict(int)  # net out degree
+        for x, y in pairs:
+            graph[x].append(y)
+            degree[x] += 1
+            degree[y] -= 1
+
+        start = None
+        for k, v in degree.items():
+            if v == 1:
+                start = k
+                break
+
+        ans = []
+
+        def fn(x):
+            """Return Eulerian path via dfs."""
+            while graph[x]:
+                fn(graph[x].pop())
+            ans.append(x)
+
+        fn(start)
+        ans.reverse()
+        return [[ans[i], ans[i + 1]] for i in range(len(ans) - 1)]</pre>
+<hr><p style='color: green;'>✅ 110. Task ID: kth-largest-element-in-an-array - Status: PASS</p>
+<hr><p style='color: red;'>❌ 111. Task ID: moving-stones-until-consecutive-ii - Status: FAIL</p>
+<pre>Fixed Code: from typing import List
+
+class Solution:
+    def numMovesStonesII(self, stones: List[int]) -> List[int]:
+        stones.sort()
+        stone_length = len(stones)
+        move_penultimate = stones[-2] - stones[0] - stone_length + 2
+        move_final = stones[-1] - stones[1] - stone_length + 2  # 修正这里的括号错误，stones[-1) 应为 stones[-1]
+        most_moves = max(move_penultimate, move_final)
+        if move_penultimate == 0 or move_final == 0:
+            min_legal_moves = min(2, most_moves)
+            return [min_legal_moves, most_moves]
+        min_legal_moves = stone_length  # 这里应该是初始化最小合法移动次数为stone_length
+        window_size = 0
+        for index in range(stone_length):
+            while stones[index] - stones[window_size] + 1 > stone_length:
+                window_size += 1
+            if index - window_size + 1 == stone_length - 1:  # 如果窗口包含了所有石头
+                continue
+            min_legal_moves = min(min_legal_moves, stone_length - (index - window_size + 1))
+        return [min_legal_moves, most_moves]</pre>
+<hr><p style='color: green;'>✅ 112. Task ID: largest-number-after-mutating-substring - Status: PASS</p>
+<hr><p style='color: green;'>✅ 113. Task ID: edit-distance - Status: PASS</p>
+<hr><p style='color: red;'>❌ 114. Task ID: add-edges-to-make-degrees-of-all-nodes-even - Status: FAIL</p>
+<pre>Fixed Code: class Solution:
+    def isPossible(self, n: int, edges: list[list[int]]) -> bool:
+        neighbors = [set() for _ in range(n)]
+        for edge in edges:
+            a, b = edge
+            a -= 1
+            b -= 1
+            neighbors[a].add(b)
+            neighbors[b].add(a)
+        oddDegreesNodes = [i for i in range(n) if (len(neighbors[i]) % 2 == 1)]
+        numOdd = len(oddDegreesNodes)
+        if numOdd == 0:
+            return True
+        elif numOdd == 4:
+            # Only possible if there are two pairs of vertices which are not connected
+            o1, o2, o3, o4 = oddDegreesNodes
+            return self.checkOddNeighbors(neighbors, [o1, o2, o3, o4])
+        elif numOdd == 2:
+            # Only possible if both not connected or both connected but there is another node to connect to
+            o1, o2 = oddDegreesNodes
+            if o1 not in neighbors[o2]:
+                # Case 1: Not connected
+                return True
+            # Case 2
+            bothConnectedTo = neighbors[o1] & neighbors[o2]
+            # Oops, no other node to connect to!
+            return len(bothConnectedTo) > 0
+        return False
+
+    def checkOddNeighbors(self, neighbors, oddNodes):
+        o1, o2, o3, o4 = oddNodes
+        return (o1 not in neighbors[o2] and o3 not in neighbors[o4]) or \
+               (o1 not in neighbors[o3] and o2 not in neighbors[o4]) or \
+               (o1 not in neighbors[o4] and o2 not in neighbors[o3])</pre>
+<hr><p style='color: green;'>✅ 115. Task ID: check-if-two-string-arrays-are-equivalent - Status: PASS</p>
+<hr><p style='color: green;'>✅ 116. Task ID: can-place-flowers - Status: PASS</p>
+<hr><p style='color: green;'>✅ 117. Task ID: length-of-the-longest-valid-substring - Status: PASS</p>
+<hr><p style='color: green;'>✅ 118. Task ID: minimum-bit-flips-to-convert-number - Status: PASS</p>
+<hr><p style='color: green;'>✅ 119. Task ID: generate-random-point-in-a-circle - Status: PASS</p>
+<hr>
